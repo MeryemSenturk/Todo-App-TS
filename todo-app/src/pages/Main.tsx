@@ -4,12 +4,13 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import AddTodoComp from "../components/AddTodoComp";
 import TodoList from "../components/TodoList";
+import { notify, SweetIcon } from "../helper/sweetAlert";
 
 // interface ITodoType {
-//   task: string;
-//   isDone: boolean;
-//   id: string | number; //* id değeri string yada number olabilir
-//   todo?: string; //? bu alan zorunlu değil optional. Eğer varsa type ı string
+//     task : string;
+//     isDone: boolean;
+//     id : string | number; //* id değeri string yada number olabilir
+//     todo?: string //? bu alan zorunlu değil optional. Eğer varsa type ı string
 // }
 
 const url = "https://634ac3fc5df952851418480f.mockapi.io/api/todos";
@@ -30,23 +31,42 @@ const Main = () => {
   };
 
   //* 1.yol
-  // const addTodo =async (task:string) => {
-  //   try {
+  // const addTodo = async (task:string) => {
+  //     try {
 
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-
+  //     } catch (error) {
+  //         console.log(error)
+  //     }
   // }
 
-  //* 2.yol
-  type AddFn = (task: string) => Promise<void>;
+  //? 2.yol
+  // type AddFn = (task:string) => Promise<void>;
+
   const addTodo: AddFn = async (task) => {
     try {
-      await axios.post(url, {task, isDone:false})
-      getTodos()
+      await axios.post(url, { task, isDone: false });
+      notify("Todo created!", SweetIcon.SUCCESS);
+      getTodos();
     } catch (error) {
       console.log(error);
+    }
+  };
+  const toggleTodo: ToggleFn = async (todo) => {
+    try {
+      await axios.put(`${url}/${todo.id}`, { ...todo, isDone: !todo.isDone });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      getTodos();
+    }
+  };
+  const deleteTodo: DeleteFn = async (id) => {
+    try {
+      await axios.delete(`${url}/${id}`);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      getTodos();
     }
   };
 
@@ -57,8 +77,8 @@ const Main = () => {
   return (
     <Container>
       <Header />
-      <AddTodoComp addTodo={addTodo}/>
-      <TodoList todos={todos}/>
+      <AddTodoComp addTodo={addTodo} />
+      <TodoList todos={todos} deleteTodo={deleteTodo} toggleTodo={toggleTodo} />
     </Container>
   );
 };
