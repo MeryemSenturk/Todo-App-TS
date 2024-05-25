@@ -3,13 +3,14 @@ import Header from "../components/Header";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import AddTodoComp from "../components/AddTodoComp";
+import TodoList from "../components/TodoList";
 
-interface ITodoType {
-  task: string;
-  isDone: boolean;
-  id: string | number; //* id değeri string yada number olabilir
-  todo?: string; //? bu alan zorunlu değil optional. Eğer varsa type ı string
-}
+// interface ITodoType {
+//   task: string;
+//   isDone: boolean;
+//   id: string | number; //* id değeri string yada number olabilir
+//   todo?: string; //? bu alan zorunlu değil optional. Eğer varsa type ı string
+// }
 
 const url = "https://634ac3fc5df952851418480f.mockapi.io/api/todos";
 
@@ -57,6 +58,7 @@ const Main = () => {
     <Container>
       <Header />
       <AddTodoComp addTodo={addTodo}/>
+      <TodoList todos={todos}/>
     </Container>
   );
 };

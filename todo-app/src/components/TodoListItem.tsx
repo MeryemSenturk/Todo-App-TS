@@ -1,9 +1,18 @@
-import React from 'react'
+import { IconButton, ListItem, ListItemText } from "@mui/material";
+import DeleteOutline from "@mui/icons-material/DeleteOutline";
 
 const TodoListItem = () => {
   return (
-    <div>TodoListItem</div>
-  )
-}
-
-export default TodoListItem
+    <ListItem
+      disableGutters
+      secondaryAction={
+        <IconButton aria-label="comment">
+          <DeleteOutline />
+        </IconButton>
+      }
+    >
+      <ListItemText primary={`Line item`} />
+    </ListItem>
+  );
+};
+export default TodoListItem;
