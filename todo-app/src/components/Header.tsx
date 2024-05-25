@@ -1,17 +1,18 @@
-import React from 'react'
+import { Typography } from "@mui/material";
+import React from "react";
 
 /**
- * @description Renders an HTML `<div>` element with the text "Header".
+ * @description Returns a typography component with an error state, center-aligned,
+ * and a large font size of "h2" variant.
  * 
- * @returns { <div>` element } a `<div>` element containing the text "Header".
- * 
- * 		- `div`: The `div` element is the outermost HTML element in the output. It
- * contains the entire contents of the `Header` function.
+ * @returns { Component } a heading element with an error message centered on the page.
  */
 const Header = () => {
   return (
-    <div>Header</div>
-  )
-}
+    <Typography color="error" variant="h2" component="h1" align="center">
+      Todo App with Typescript
+    </Typography>
+  );
+};
 
-export default Header
+export default Header;
