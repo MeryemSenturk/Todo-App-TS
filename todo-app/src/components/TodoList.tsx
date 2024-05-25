@@ -1,8 +1,14 @@
 import { Grid, Typography } from "@mui/material";
-import TodoListItem from "./TodoListItem";
 import React from "react";
+import TodoListItem from "./TodoListItem";
+import "./style.css";
+// interface ITodoList {
+//     todos: ITodoType[];
+//     deleteTodo:DeleteFn;
+//     toggleTodo:ToggleFn
+// }
 
-interface ITodoList {
+interface ITodoList extends ITodoListFn {
   todos: ITodoType[];
 }
 
@@ -16,17 +22,31 @@ interface ITodoList {
 //+ FC, "FunctionComponent" kelimelerinin kısaltmasıdır.
 
 /**
- * @description Generates high-quality documentation for code given to it, based on
- * two arrays of Todo objects: `progressTodos` and `completedTodos`. It returns a
- * layout with two grids, each displaying the appropriate Todos based on their status.
+ * @description Returns a component that renders two grids displaying either "InProgress
+ * Todos" or "Completed Todos", based on the length of the respective arrays. The
+ * component accepts three props: `todos`, `deleteTodo`, and `toggleTodo`.
  * 
- * @param { array } .todos - array of todos that the function will work on, and it
- * is used to filter out the inprogress and completed todos from the original array.
+ * @param { array } .todos - array of todos that needs to be filtered and displayed
+ * in two separate sections based on their completion status.
  * 
- * @returns { object } a grid container that displays two grids, each containing a
- * list of TodoItem components.
+ * @param { `Function`. } .deleteTodo - `deleteTodo` function, which when called,
+ * will delete the Todo item passed as an argument from the list of InProgress Todos.
+ * 
+ * 		- `deleteTodo`: This function is the primary action for removing a todo from the
+ * list.
+ * 		- `todo`: This property represents the todo that will be removed upon calling
+ * the `deleteTodo` function.
+ * 
+ * 	The function returns no value, as it is meant to be a pure function without any
+ * side effects.
+ * 
+ * @param { boolean } .toggleTodo - 🎲 icon next to each completed todo and allows
+ * users to toggle its state back to InProgress by clicking on it again.
+ * 
+ * @returns { object } a React component that displays two lists of Todos, one for
+ * InProgress and one for Completed, using the `filter` method to create them.
  */
-const TodoList: React.FC<ITodoList> = ({ todos }) => {
+const TodoList: React.FC<ITodoList> = ({ todos, deleteTodo, toggleTodo }) => {
   const progressTodos = todos.filter((todo) => !todo.isDone);
   const completedTodos = todos.filter((todo) => todo.isDone);
   return (
@@ -36,108 +56,201 @@ const TodoList: React.FC<ITodoList> = ({ todos }) => {
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
-        gap: "1rem",
-        mt: 1,
+        gap: "0.5rem",
+        mt: 3,
       }}
     >
       {/**
-       * @description Displays a list of `TodoListItem` components, which display information
-       * about each todo item's status as "InProgress".
+       * @description Provides a container for displaying a list of "InProgress Todos" using
+       * the `Typography` and `TodoListItem` components. It retrieves the length of the
+       * `progressTodos` array, maps over it to display each todo item, and handles deleting
+       * or toggleing todo items when their respective buttons are clicked.
        * 
-       * @param { 12-item grid container. } xs - 12 columns on small screens, such as
-       * smartphones or tablets.
+       * @param { number } xs - 12-column layout size for the grid container, allowing for
+       * proper spacing and alignment of its children elements within the specified space.
        * 
-       * 		- `item`: The number of items to display in each row.
-       * 		- `xs`: The grid system for small screens (less than 400px).
-       * 		- `sm`: The grid system for medium-sized screens (400px - 600px).
-       * 		- `md`: The grid system for medium-sized screens (600px - 900px).
-       * 		- `sx`: The CSS object for styling the grid, including the min and max height,
-       * overflow behavior, border radius, and border color.
+       * @param { 8-based grid size. } sm - 8th column for the Grid component, which sets
+       * the grid spacing for medium-sized screens (i.e., devices with screen sizes between
+       * 768px and 1024px).
        * 
-       * @param { integer } sm - 8-column width on medium-sized devices in the grid structure.
+       * 		- `position`: The property `position` is set to `"relative"`, which means that
+       * the child elements will be positioned relative to their parent element.
+       * 		- `className`: The class name `myscrool scrool-progress` is assigned to the `
+       * Grid` component, indicating that it should be used for progress tracking.
+       * 		- `sx`: The property `sx` contains several attributes related to layout and styling:
+       * 		+ `minHeight`: Set to `"350px"` to ensure that the grid has a minimum height of
+       * 350 pixels.
+       * 		+ `maxHeight`: Set to `"350px"` to ensure that the grid has a maximum height of
+       * 350 pixels.
+       * 		+ `overflow`: Set to `"auto"` to allow the content of the grid to overflow if
+       * necessary, without hiding it behind an ellipsis.
+       * 		+ `border`: Set to `"1px solid purple"` to add a 1-pixel border to the grid with
+       * a purple color.
+       * 		+ `borderRadius`: Set to `"0.5rem"` to round the edges of the grid to half a rem
+       * unit (approximately 7.87 pixels at a font size of 16).
        * 
-       * @param { array } md - 6th item in the grid layout, displaying 6 items per row on
-       * medium-sized screens (i.e., screen sizes between 601px and 768px).
+       * @param { 5-value numeric variable. } md - 5th column of the `Grid` component and
+       * is used to define the number of items to display in the middle row of the grid
+       * when the screen size is medium or larger.
        * 
-       * @param { object } sx - CSS styling for the Grid component, including the minimum
-       * and maximum height, as well as overflow behavior, border radius, and border color.
+       * 		- `position`: The property `position` is set to `"relative"`. This specifies
+       * that the Grid should be positioned relative to its parent element.
+       * 		- `className`: The className attribute is set to `"myscrool scrool-progress"`.
+       * This adds a custom class name to the Grid element for styling purposes.
+       * 		- `sx`: The `sx` property is an object containing various CSS properties and
+       * values for the Grid element. These include:
+       * 		+ `minHeight`: The value of `minHeight` is set to `"350px"`. This specifies a
+       * minimum height for the Grid element of 350 pixels.
+       * 		+ `maxHeight`: The value of `maxHeight` is also set to `"350px"`. This specifies
+       * a maximum height for the Grid element of 350 pixels.
+       * 		+ `overflow`: The value of `overflow` is set to `"auto"`. This specifies that
+       * any content that exceeds the height of the Grid element should be automatically
+       * overflowed to the next line.
+       * 		+ `border`: The value of `border` is set to `1px solid purple`. This sets a
+       * border width of 1 pixel and specifies that it should be solid (i.e., filled) with
+       * a color of purple.
+       * 		+ `borderRadius`: The value of `borderRadius` is set to `"0.5rem"`. This sets
+       * the rounded corners of the Grid element to have a radius of 0.5 rem (i.e., relative
+       * to the size of the Grid element).
+       * 
+       * @param { string } position - `position` of the grid container in which the todos
+       * are displayed, with possible values of `"relative"` or other CSS positioning options.
+       * 
+       * @param { string } className - class name for the grid container, defining its
+       * appearance and layout options.
+       * 
+       * @param { object } sx - styles object that applies specific CSS properties to the
+       * component's grid container, including setting the minimum and maximum heights of
+       * the grid, enabling overflow, adding a border radius, and setting the border color.
        */}
       <Grid
         item
         xs={12}
         sm={8}
-        md={6}
+        md={5}
+        position={"relative"}
+        className="myscrool scrool-progress"
         sx={{
           minHeight: "350px",
           maxHeight: "350px",
           overflow: "auto",
           border: "1px solid purple",
-          borderRadius: "1rem",
+          borderRadius: "0.5rem",
         }}
       >
-        <Typography>InProgress Todos</Typography>
+        <Typography
+          className="title"
+          color="secondary"
+          align="center"
+          variant="h4"
+        >
+          InProgress Todos
+        </Typography>
         {progressTodos.length ? (
-          progressTodos.map((todo) => <TodoListItem />)
+          progressTodos.map((todo) => (
+            <TodoListItem
+              deleteTodo={deleteTodo}
+              toggleTodo={toggleTodo}
+              todo={todo}
+              key={todo.id}
+            />
+          ))
         ) : (
-          <Typography color="error">No InProgress Todos!</Typography>
+          <Typography color="error" mt={3}>
+            No InProgress Todos!
+          </Typography>
         )}
       </Grid>
       {/**
-       * @description Renders a list of `TodoListItem` components based on the length of
-       * the `completedTodos` array, displaying the completed tasks when there are any, and
-       * indicating otherwise with a message.
+       * @description Renders a list of `TodoListItem` components, each representing a
+       * completed todo, with a green title and a delete/toggle button for each item.
        * 
-       * @param { 12-unit length. } xs - 12th grid item in the `Grid` component.
+       * @param { 12-based grid size. } xs - 12th grid item position for the component
+       * layout within its container.
        * 
-       * 		- `item`: The number of columns to span across the grid.
-       * 		- `sm`: The minimum width of each column in small breakpoints.
-       * 		- `md`: The minimum width of each column in medium breakpoints.
-       * 		- `sx`: An object containing properties for customizing the grid.
-       * 		+ `minHeight`: The minimum height of the grid container.
-       * 		+ `maxHeight`: The maximum height of the grid container.
-       * 		+ `overflow`: The behavior when the content exceeds the grid height, with "auto"
-       * being the default.
-       * 		+ `border`: The border width and color.
-       * 		+ `borderRadius`: The corner radius of the grid container.
+       * 		- `item`: The number of columns to span within the container. In this case, it
+       * is set to 12 in the `xs` prop.
+       * 		- `sm`: The breakpoint at which the grid will switch to a different layout. In
+       * this case, it is set to 8 for small breaks and 5 for medium breaks.
+       * 		- `md`: The breakpoint at which the grid will switch to a different layout. In
+       * this case, it is set to 5 for medium-dark breaks.
+       * 		- `position`: The position of the grid within its container. In this case, it
+       * is set to "relative" so that the grid can be positioned relative to its containing
+       * element.
+       * 		- `className`: A class name to apply to the grid container element. In this case,
+       * it is set to "myscrool scrool-completed".
+       * 		- `sx`: An object of CSS styles to apply to the grid container element. The
+       * following properties are defined:
+       * 		+ `minHeight`: The minimum height of the grid container element. It is set to 350px.
+       * 		+ `maxHeight`: The maximum height of the grid container element. It is set to 350px.
+       * 		+ `overflow`: Whether the grid should overflow or be clipped when its content
+       * exceeds its bounds. It is set to "auto".
+       * 		+ `border`: The border width and color of the grid container element. It is set
+       * to 1px solid green.
+       * 		+ `borderRadius`: The radius of the corners of the grid container element. It
+       * is set to 0.5rem.
        * 
-       * @param { number } sm - 6-column layout size for the `Grid` component, which allows
-       * for better spacing and arrangement of components within the grid.
+       * @param { integer } sm - 8-column block size for medium-sized screens and higher,
+       * ensuring optimal spacing and alignment of content within the grid layout.
        * 
-       * @param { 8-based grid item index. } md - 6-column grid layout for medium-sized
-       * screens and above.
+       * @param { 5-based index. } md - 5th column of the ` Grid` component, where the
+       * completed todos will be displayed.
        * 
-       * 		- `item`: The number of items to be placed in the grid.
-       * 		- `xs`: The number of items to be placed in the extra small breakpoint (0-576px).
-       * 		- `sm`: The number of items to be placed in the small breakpoint (576-768px).
-       * 		- `md`: The number of items to be placed in the medium breakpoint (768-960px).
-       * 		- `sx`: The number of items to be placed in the extra large breakpoint (1200px
-       * and above).
-       * 		- `minHeight` and `maxHeight`: The minimum and maximum height of the grid, respectively.
-       * 		- `overflow` and `borderRadius`: Additional styles for the grid container.
+       * 		- `position`: The `position` property is set to `"relative"`.
+       * 		- `className`: The `className` attribute is set to `"myscrool scrool-completed"`.
+       * 		- `sx`: The `sx` attribute is a mapping of CSS properties and values that modify
+       * the appearance of the grid. Here, it sets the minimum height to `350px`, maximum
+       * height to `350px`, and uses the `overflow` property to prevent any excess content
+       * from overflowing. It also sets the border color to `green`, and adds a radius of
+       * `0.5rem` to the borders using the `borderRadius` property.
+       * 		- `Completed Todos`: The `completedTodos` variable is passed as a prop to the
+       * component, containing an array of completed todos.
        * 
-       * @param { object } sx - styling for the component, specifically setting the minHeight
-       * and maxHeight of the containing element to ensure the grid item has enough vertical
-       * space, as well as adding a border and radius to visually distinguish the grid item
-       * from others.
+       * @param { string } position - horizontal position of the grid container relative
+       * to its parent element, with options for `relative`, `absolute`, or `fixed`.
+       * 
+       * @param { string } className - class name for the `Grid` element that contains the
+       * list of completed todos, allowing for customizable styling and layout options.
+       * 
+       * @param { object } sx - styles object for the component, allowing you to customize
+       * the layout and appearance of the completed todos list.
        */}
       <Grid
         item
         xs={12}
         sm={8}
-        md={6}
+        md={5}
+        position={"relative"}
+        className="myscrool scrool-completed"
         sx={{
           minHeight: "350px",
           maxHeight: "350px",
           overflow: "auto",
           border: "1px solid green",
-          borderRadius: "1rem",
+          borderRadius: "0.5rem",
         }}
       >
-        <Typography>Completed Todos</Typography>
+        <Typography
+          className="title"
+          sx={{ color: "green" }}
+          align="center"
+          variant="h4"
+        >
+          Completed Todos
+        </Typography>
         {completedTodos.length ? (
-          completedTodos.map((todo) => <TodoListItem />)
+          completedTodos.map((todo) => (
+            <TodoListItem
+              deleteTodo={deleteTodo}
+              toggleTodo={toggleTodo}
+              todo={todo}
+              key={todo.id}
+            />
+          ))
         ) : (
-          <Typography color="error">No Completed Todos!</Typography>
+          <Typography color="error" mt={3}>
+            No Completed Todos!
+          </Typography>
         )}
       </Grid>
     </Grid>
