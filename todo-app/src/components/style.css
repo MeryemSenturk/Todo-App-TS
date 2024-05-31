@@ -6,7 +6,7 @@
   
   /* Scroll çubuğu (kaydırma barı) */
   .scrool-progress::-webkit-scrollbar-thumb {
-    background-color: purple; /* scrollbar rengi */
+    background-color: rgb(23, 0, 128); /* scrollbar rengi */
     border-radius: 6px; /* scrollbar köşe yuvarlaklığı */
   }
   .scrool-completed::-webkit-scrollbar-thumb {
